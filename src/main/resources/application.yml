@@ -1,0 +1,32 @@
+server:
+  port: 3333
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: Sar@
+    url: jdbc:postgresql://localhost:5433/db_candidacy
+    username: postgres
+  jackson:
+    time-zone: Africa/Casablanca
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  security:
+    enabled: true
+    allowed-origins: "*"
+    allowed-methods: "GET,POST,PUT,DELETE"
+    allowed-headers: "Content-Type,Authorization"
+    exposed-headers: "Authorization,Content-Disposition"
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8881/realms/bdcc_realm
+          jwk-set-uri: http://localhost:8881/realms/bdcc_realm/protocol/openid-connect/certs
+
+
