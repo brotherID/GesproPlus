@@ -7,8 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2TokenIntrospectionClaimNames;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,6 @@ import java.util.stream.Stream;
 @Slf4j
 @NoArgsConstructor
 public class SecurityContextHandler {
-    public static final String USER_HEADER = "X-USER";
 
     public static Jwt getJwt() {
         return Optional.ofNullable(SecurityContextHolder.getContext())
@@ -50,7 +48,6 @@ public class SecurityContextHandler {
 
     public static String extractConnectedUserIdentifier(Jwt token) {
         return Stream.of(
-                        SecurityContextHandler.getOriginalUser(),
                         token.getClaimAsString("preferred_username"),
                         token.getClaimAsString(OAuth2TokenIntrospectionClaimNames.CLIENT_ID),
                         token.getClaimAsString("azp"),
@@ -61,16 +58,5 @@ public class SecurityContextHandler {
                 .orElse(null);
     }
 
-    public static String getOriginalUser() {
-        return Optional.ofNullable(RequestContextHolder.getRequestAttributes())
-                .filter(ServletRequestAttributes.class::isInstance)
-                .map(ServletRequestAttributes.class::cast)
-                .map(ServletRequestAttributes::getRequest)
-                .map(e -> e.getHeader(USER_HEADER))
-                .orElseGet(() -> {
-                    log.warn("[{}] header not found! returning null...", USER_HEADER);
-                    return null;
-                });
-    }
 
 }

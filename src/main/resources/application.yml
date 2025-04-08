@@ -3,10 +3,15 @@ server:
 
 spring:
   datasource:
-    driver-class-name: org.postgresql.Driver
-    password: Sar@
-    url: jdbc:postgresql://localhost:5433/db_candidacy
-    username: postgres
+    #    url: jdbc:mysql://localhost:3306/db_gesproplus
+    #    username: root
+    #    password: root
+    #    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.h2.Driver
+    password:
+    url: jdbc:h2:file:./data/db_gesproplus
+    #url: jdbc:h2:mem:db_gesproplus
+    username: sa
   jackson:
     time-zone: Africa/Casablanca
   jpa:
@@ -14,7 +19,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        #dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
     show-sql: true
   security:
@@ -26,7 +31,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8881/realms/bdcc_realm
-          jwk-set-uri: http://localhost:8881/realms/bdcc_realm/protocol/openid-connect/certs
+          issuer-uri: http://localhost:8080/realms/bdcc_realm
+          jwk-set-uri: http://localhost:8080/realms/bdcc_realm/protocol/openid-connect/certs
 
 

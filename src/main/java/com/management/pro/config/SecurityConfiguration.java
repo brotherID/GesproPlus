@@ -1,6 +1,5 @@
 package com.management.pro.config;
 
-import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,7 +16,6 @@ import org.springframework.security.config.annotation.web.configurers.RequestCac
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.servlet.handler.MappedInterceptor;
 
 import java.util.List;
 
@@ -28,21 +26,21 @@ import java.util.List;
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "security.enabled", havingValue = "true", matchIfMissing = true)
 public class SecurityConfiguration {
-    protected static final String[] AUTH_WHITELIST = {"/v3/api-docs/**", "/swagger*/**", "/webjars/**", "/actuator/**", "/api-docs/**"};
+    protected static final String[] AUTH_WHITELIST = {"/v3/api-docs/**", "/swagger*/**", "/webjars/**", "/actuator/**", "/api-docs/**","/h2-console/*"};
     private static final String COMMA = ",";
     private final SecurityConfigProperties springSecurityProperties;
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         log.info("Configuring Web Security...");
 
-        http.cors(cors -> cors.configurationSource(request -> {
-            final var corsConfiguration = new CorsConfiguration();
-            corsConfiguration.setAllowedOrigins(List.of(springSecurityProperties.getAllowedOrigins().split(COMMA)));
-            corsConfiguration.setAllowedMethods(List.of(springSecurityProperties.getAllowedMethods().split(COMMA)));
-            corsConfiguration.setAllowedHeaders(List.of(springSecurityProperties.getAllowedHeaders().split(COMMA)));
-            corsConfiguration.setExposedHeaders(List.of(springSecurityProperties.getExposedHeaders().split(COMMA)));
-            return corsConfiguration;
-        }));
+//        http.cors(cors -> cors.configurationSource(request -> {
+//            final var corsConfiguration = new CorsConfiguration();
+//            corsConfiguration.setAllowedOrigins(List.of(springSecurityProperties.getAllowedOrigins().split(COMMA)));
+//            corsConfiguration.setAllowedMethods(List.of(springSecurityProperties.getAllowedMethods().split(COMMA)));
+//            corsConfiguration.setAllowedHeaders(List.of(springSecurityProperties.getAllowedHeaders().split(COMMA)));
+//            corsConfiguration.setExposedHeaders(List.of(springSecurityProperties.getExposedHeaders().split(COMMA)));
+//            return corsConfiguration;
+//        }));
 
         http.headers(httpSecurityHeadersConfigurer ->
                 httpSecurityHeadersConfigurer
@@ -66,12 +64,6 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-
-    @Bean
-    public MappedInterceptor authorityHandler(Tracer tracer) {
-        return new MappedInterceptor(null, new AuthorityInterceptor(tracer));
-    }
-
 
 
 

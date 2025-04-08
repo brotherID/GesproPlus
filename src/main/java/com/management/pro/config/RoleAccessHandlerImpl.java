@@ -1,7 +1,7 @@
 package com.management.pro.config;
 
 import com.management.pro.model.RoleModel;
-import com.management.pro.service.RoleService;
+import com.management.pro.service.role.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

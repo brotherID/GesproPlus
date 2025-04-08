@@ -1,4 +1,4 @@
-package com.management.pro.service;
+package com.management.pro.service.role;
 
 import com.management.pro.dtos.Role;
 import com.management.pro.model.RoleModel;
