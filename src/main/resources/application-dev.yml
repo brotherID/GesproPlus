@@ -2,14 +2,11 @@ server:
   port: 3333
 
 spring:
-  profiles:
-    active: dev
   datasource:
-    driver-class-name: org.h2.Driver
-    password:
-    url: jdbc:h2:file:./data/db_gesproplus
-    #url: jdbc:h2:mem:db_gesproplus
-    username: sa
+        url: jdbc:mysql://localhost:3306/db_gesproplus
+        username: admin
+        password: azerty01**
+        driver-class-name: com.mysql.cj.jdbc.Driver
   jackson:
     time-zone: Africa/Casablanca
   jpa:
@@ -17,8 +14,14 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
     show-sql: true
+
+  liquibase:
+      change-log: classpath:db/changelog/liquibase-changelog.yaml
+      enabled: true
+
   security:
     enabled: true
     allowed-origins: "*"

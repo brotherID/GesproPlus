@@ -1,8 +1,10 @@
 package com.management.pro.service.role;
 
+import com.management.pro.config.SecurityContextHandler;
 import com.management.pro.dtos.Role;
 import com.management.pro.exceptions.ConflictException;
 import com.management.pro.mapper.RoleMapper;
+import com.management.pro.model.PermissionModel;
 import com.management.pro.model.RoleModel;
 import com.management.pro.repository.RoleRepository;
 import com.management.pro.service.permission.PermissionService;
@@ -27,28 +29,88 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.findAll();
     }
 
-    @Override
-    public Role create(Role role) {
-         log.info("Begin create Role");
-         roleRepository.findById(role.getId())
-                .ifPresent(roleFounded -> {
+
+    public boolean canCreateRole(String currentRole, String roleToSave) {
+        if ("SUPERADMIN".equals(currentRole)) {
+            return "ADMIN".equals(roleToSave);
+        }
+        if ("ADMIN".equals(currentRole)) {
+            return !List.of("ADMIN", "SUPERADMIN").contains(roleToSave);
+        }
+        return false;
+    }
+
+    public String getCurrentRole() {
+        if (SecurityContextHandler.getRoles().contains("SUPERADMIN")) {
+            return "SUPERADMIN";
+        } else if (SecurityContextHandler.getRoles().contains("ADMIN")) {
+            return "ADMIN";
+        }else{
+            return "";
+        }
+    }
+
+    private void validateAuthorizationToCreate(Role role) {
+        if (!canCreateRole(getCurrentRole(), role.getRole())) {
+            throw new ConflictException("You do not have the right to create this role.");
+        }
+    }
+
+    private void ensureRoleDoesNotExist(String roleId) {
+        roleRepository.findById(roleId)
+                .ifPresent(existing -> {
                     throw new ConflictException(ROLE_ALREADY_EXISTS);
                 });
+    }
 
-        boolean allExist = role.getPermissionList()
+    private void validatePermissionsExist(List<String> permissionList) {
+        List<String> existingPermissions = permissionService.getAllPermissions()
                 .stream()
-                .allMatch(rolePermission -> permissionService.getAllPermissions()
-                        .stream()
-                        .anyMatch(existingPermission -> Objects.equals(existingPermission.getPermission(), rolePermission)
-                )
-        );
+                .map(PermissionModel::getPermission)
+                .toList();
 
-        if(!allExist) {
-            throw new ConflictException("Permissions do not exists");
+        boolean allExist = permissionList.stream()
+                .allMatch(existingPermissions::contains);
+
+        if (!allExist) {
+            throw new ConflictException("Permissions do not exist");
         }
+    }
 
-        RoleModel roleModel = roleMapper.toRoleModel(role);
-        return roleMapper.toRole(roleRepository.save(roleModel));
+
+    @Override
+    public Role create(Role role) {
+        log.info("Begin create Role");
+//        if (canCreateRole(getCurrentRole(), role.getRole())) {
+//            roleRepository.findById(role.getId())
+//                    .ifPresent(roleFounded -> {
+//                        throw new ConflictException(ROLE_ALREADY_EXISTS);
+//                    });
+//
+//            boolean allExist = role.getPermissionList()
+//                    .stream()
+//                    .allMatch(rolePermission -> permissionService.getAllPermissions()
+//                            .stream()
+//                            .anyMatch(existingPermission -> Objects.equals(existingPermission.getPermission(), rolePermission)
+//                            )
+//                    );
+//
+//            if (!allExist) {
+//                throw new ConflictException("Permissions do not exists");
+//            }
+//
+//            RoleModel roleModel = roleMapper.toRoleModel(role);
+//            return roleMapper.toRole(roleRepository.save(roleModel));
+//        }else{
+//            throw new ConflictException("You do not have the right to create this role.");
+//        }
+        validateAuthorizationToCreate(role);
+        ensureRoleDoesNotExist(role.getId());
+        validatePermissionsExist(role.getPermissionList());
+
+        RoleModel savedModel = roleRepository.save(roleMapper.toRoleModel(role));
+        return roleMapper.toRole(savedModel);
+
     }
 
 

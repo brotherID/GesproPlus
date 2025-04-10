@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/insert-data-permission.xml
+  - include:
+      file: db/changelog/insert-role-superadmin.xml
