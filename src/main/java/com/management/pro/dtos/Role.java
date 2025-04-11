@@ -12,5 +12,6 @@ import java.util.List;
 public class Role {
     private String id;
     private String role;
+    private Boolean isAdmin;
     private List<String> permissionList;
 }

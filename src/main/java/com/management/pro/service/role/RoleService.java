@@ -4,6 +4,7 @@ import com.management.pro.dtos.Role;
 import com.management.pro.model.RoleModel;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface RoleService {
@@ -16,4 +17,6 @@ public interface RoleService {
     void delete(String id);
 
     List<RoleModel> findByIdIn(List<String> id);
+
+    Optional<Role> findById(String id);
 }

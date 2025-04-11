@@ -9,6 +9,7 @@
         <insert tableName="role">
             <column name="id" value="SUPERADMIN"/>
             <column name="role" value="SUPERADMIN"/>
+            <column name="is_admin" valueBoolean="true"/>
         </insert>
 
         <insert tableName="roles_permissions">

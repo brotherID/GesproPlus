@@ -29,6 +29,12 @@ public class RoleAccessHandlerImpl implements RoleAccessHandler {
         log.info("roleList : " + roleList);
         List<RoleModel> roleModelList = Optional.ofNullable(this.roleService.findByIdIn(List.copyOf(roleList))).orElse(List.of());
         log.info("roleModelList : " + roleModelList);
+        boolean hasAdminRole = roleModelList.stream()
+                .anyMatch(role -> Boolean.TRUE.equals(role.getIsAdmin()));
+        log.info("Has Admin Role : {}", hasAdminRole);
+        if (hasAdminRole) {
+            return true;
+        }
         return roleModelList.stream()
                 .flatMap(role -> role.getPermissionList().stream())
                 .anyMatch(code -> code.equals(permission));

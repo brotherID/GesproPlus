@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -81,13 +82,11 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role create(Role role) {
         log.info("Begin create Role");
-        validateAuthorizationToCreate(role);
+        //validateAuthorizationToCreate(role);
         ensureRoleDoesNotExist(role.getId());
         validatePermissionsExist(role.getPermissionList());
-
         RoleModel savedModel = roleRepository.save(roleMapper.toRoleModel(role));
         return roleMapper.toRole(savedModel);
-
     }
 
 
@@ -106,4 +105,12 @@ public class RoleServiceImpl implements RoleService {
     public List<RoleModel> findByIdIn(List<String> ids) {
         return roleRepository.findByIdIn(ids).orElse(List.of());
     }
+
+    @Override
+    public Optional<Role> findById(String roleId) {
+        return roleRepository.findById(roleId)
+                .map(roleMapper::toRole);
+    }
+
+
 }
