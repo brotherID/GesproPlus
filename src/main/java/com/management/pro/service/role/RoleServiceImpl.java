@@ -81,29 +81,6 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role create(Role role) {
         log.info("Begin create Role");
-//        if (canCreateRole(getCurrentRole(), role.getRole())) {
-//            roleRepository.findById(role.getId())
-//                    .ifPresent(roleFounded -> {
-//                        throw new ConflictException(ROLE_ALREADY_EXISTS);
-//                    });
-//
-//            boolean allExist = role.getPermissionList()
-//                    .stream()
-//                    .allMatch(rolePermission -> permissionService.getAllPermissions()
-//                            .stream()
-//                            .anyMatch(existingPermission -> Objects.equals(existingPermission.getPermission(), rolePermission)
-//                            )
-//                    );
-//
-//            if (!allExist) {
-//                throw new ConflictException("Permissions do not exists");
-//            }
-//
-//            RoleModel roleModel = roleMapper.toRoleModel(role);
-//            return roleMapper.toRole(roleRepository.save(roleModel));
-//        }else{
-//            throw new ConflictException("You do not have the right to create this role.");
-//        }
         validateAuthorizationToCreate(role);
         ensureRoleDoesNotExist(role.getId());
         validatePermissionsExist(role.getPermissionList());
