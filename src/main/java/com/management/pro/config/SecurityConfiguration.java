@@ -33,14 +33,14 @@ public class SecurityConfiguration {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         log.info("Configuring Web Security...");
 
-//        http.cors(cors -> cors.configurationSource(request -> {
-//            final var corsConfiguration = new CorsConfiguration();
-//            corsConfiguration.setAllowedOrigins(List.of(springSecurityProperties.getAllowedOrigins().split(COMMA)));
-//            corsConfiguration.setAllowedMethods(List.of(springSecurityProperties.getAllowedMethods().split(COMMA)));
-//            corsConfiguration.setAllowedHeaders(List.of(springSecurityProperties.getAllowedHeaders().split(COMMA)));
-//            corsConfiguration.setExposedHeaders(List.of(springSecurityProperties.getExposedHeaders().split(COMMA)));
-//            return corsConfiguration;
-//        }));
+        http.cors(cors -> cors.configurationSource(request -> {
+            final var corsConfiguration = new CorsConfiguration();
+            corsConfiguration.setAllowedOrigins(List.of(springSecurityProperties.getAllowedOrigins().split(COMMA)));
+            corsConfiguration.setAllowedMethods(List.of(springSecurityProperties.getAllowedMethods().split(COMMA)));
+            corsConfiguration.setAllowedHeaders(List.of(springSecurityProperties.getAllowedHeaders().split(COMMA)));
+            corsConfiguration.setExposedHeaders(List.of(springSecurityProperties.getExposedHeaders().split(COMMA)));
+            return corsConfiguration;
+        }));
 
         http.headers(httpSecurityHeadersConfigurer ->
                 httpSecurityHeadersConfigurer

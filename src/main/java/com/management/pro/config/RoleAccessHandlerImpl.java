@@ -29,10 +29,10 @@ public class RoleAccessHandlerImpl implements RoleAccessHandler {
         log.info("roleList : " + roleList);
         List<RoleModel> roleModelList = Optional.ofNullable(this.roleService.findByIdIn(List.copyOf(roleList))).orElse(List.of());
         log.info("roleModelList : " + roleModelList);
-        boolean hasAdminRole = roleModelList.stream()
-                .anyMatch(role -> Boolean.TRUE.equals(role.getIsAdmin()));
-        log.info("Has Admin Role : {}", hasAdminRole);
-        if (hasAdminRole) {
+        boolean hasAdminSuperAdminRole = roleModelList.stream()
+                .anyMatch(role -> Boolean.TRUE.equals(role.getIsAdmin()) || Boolean.TRUE.equals(role.getIsSuperAdmin()));
+        log.info("Has Admin Role or Super Admin Role: {}", hasAdminSuperAdminRole);
+        if (hasAdminSuperAdminRole) {
             return true;
         }
         return roleModelList.stream()

@@ -13,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,32 +30,6 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.findAll();
     }
 
-
-    public boolean canCreateRole(String currentRole, String roleToSave) {
-        if ("SUPERADMIN".equals(currentRole)) {
-            return "ADMIN".equals(roleToSave);
-        }
-        if ("ADMIN".equals(currentRole)) {
-            return !List.of("ADMIN", "SUPERADMIN").contains(roleToSave);
-        }
-        return false;
-    }
-
-    public String getCurrentRole() {
-        if (SecurityContextHandler.getRoles().contains("SUPERADMIN")) {
-            return "SUPERADMIN";
-        } else if (SecurityContextHandler.getRoles().contains("ADMIN")) {
-            return "ADMIN";
-        }else{
-            return "";
-        }
-    }
-
-    private void validateAuthorizationToCreate(Role role) {
-        if (!canCreateRole(getCurrentRole(), role.getRole())) {
-            throw new ConflictException("You do not have the right to create this role.");
-        }
-    }
 
     private void ensureRoleDoesNotExist(String roleId) {
         roleRepository.findById(roleId)
@@ -79,10 +53,10 @@ public class RoleServiceImpl implements RoleService {
     }
 
 
+
     @Override
     public Role create(Role role) {
         log.info("Begin create Role");
-        //validateAuthorizationToCreate(role);
         ensureRoleDoesNotExist(role.getId());
         validatePermissionsExist(role.getPermissionList());
         RoleModel savedModel = roleRepository.save(roleMapper.toRoleModel(role));
@@ -91,9 +65,14 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    public RoleModel save(RoleModel roleModel) {
-        roleRepository.findById(roleModel.getId()).orElseThrow(RuntimeException::new);
-        return roleRepository.save(roleModel);
+    public Role updateRole(Role role) {
+        log.info("Begin update  role : {}", role);
+        RoleModel roleModel =  findRoleOrFail(role.getId());
+        roleModel.setIsAdmin(role.getIsAdmin());
+        roleModel.setIsSuperAdmin(role.getIsSuperAdmin());
+        roleModel.setRole(role.getRole());
+        roleModel.setPermissionList( role.getPermissionList().stream().distinct().collect(Collectors.toList()));
+        return roleMapper.toRole(roleRepository.save(roleModel));
     }
 
     @Override
@@ -110,6 +89,47 @@ public class RoleServiceImpl implements RoleService {
     public Optional<Role> findById(String roleId) {
         return roleRepository.findById(roleId)
                 .map(roleMapper::toRole);
+    }
+
+    private RoleModel findRoleOrFail(String roleId) {
+        return roleRepository.findById(roleId)
+                .orElseThrow(() -> new ConflictException("Role not found"));
+    }
+
+    private Role removePermissionAndSave(RoleModel role, String permission) {
+        boolean removed = role.getPermissionList().remove(permission);
+        if (!removed) {
+            throw new ConflictException("Permission not found in role");
+        }
+
+        RoleModel updated = roleRepository.save(role);
+        return roleMapper.toRole(updated);
+    }
+
+
+
+    @Override
+    public Role removePermissionFromRole(String roleId, String permission) {
+        log.info("Begin removePermissionFromRole  , roleId = {}, permission = {}", roleId, permission);
+        RoleModel role = findRoleOrFail(roleId);
+        return removePermissionAndSave(role, permission);
+    }
+
+    private Role addPermissionAndSave(RoleModel role, String permission) {
+        if (role.getPermissionList().contains(permission)) {
+            throw new ConflictException("Permission already exists in role");
+        }
+
+        role.getPermissionList().add(permission);
+        RoleModel updated = roleRepository.save(role);
+        return roleMapper.toRole(updated);
+    }
+
+    @Override
+    public Role addPermissionToRole(String roleId, String permission) {
+        log.info("Begin addPermissionToRole  , roleId = {}, permission = {}", roleId, permission);
+        RoleModel role = findRoleOrFail(roleId);
+        return addPermissionAndSave(role, permission);
     }
 
 

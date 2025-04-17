@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +27,10 @@ public class RoleControllerImpl implements RoleController {
         return ResponseEntity.ok().body(roleList);
     }
 
+    @Override
+    public ResponseEntity<Optional<Role>> getRoleById(String id) {
+        return ResponseEntity.ok().body(roleService.findById(id));
+    }
 
 
     @Override
@@ -36,9 +41,7 @@ public class RoleControllerImpl implements RoleController {
 
     @Override
     public ResponseEntity<Role> updateRole(Role role) {
-        RoleModel roleModel = roleMapper.toRoleModel(role);
-        RoleModel savedRoleModel = roleService.save(roleModel);
-        return ResponseEntity.ok().body(roleMapper.toRole(savedRoleModel));
+        return ResponseEntity.ok().body(roleService.updateRole(role));
     }
 
     @Override
@@ -47,8 +50,15 @@ public class RoleControllerImpl implements RoleController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
+    public ResponseEntity<Role> removePermissionFromRole(String roleId, String permission) {
+        return ResponseEntity.ok(roleService.removePermissionFromRole(roleId, permission));
+    }
 
-
+    @Override
+    public ResponseEntity<Role> addPermissionToRole(String roleId, String permission) {
+        return ResponseEntity.ok(roleService.addPermissionToRole(roleId, permission));
+    }
 
 
 }

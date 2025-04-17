@@ -13,5 +13,6 @@ public class Role {
     private String id;
     private String role;
     private Boolean isAdmin;
+    private Boolean isSuperAdmin;
     private List<String> permissionList;
 }

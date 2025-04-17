@@ -16,6 +16,7 @@ public class RoleModel {
     private String id;
     private String role;
     private Boolean isAdmin;
+    private Boolean isSuperAdmin;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "roles_permissions", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     @Column(name = "permission")

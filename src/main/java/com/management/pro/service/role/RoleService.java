@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface RoleService {
     List<RoleModel> findAll();
 
-    RoleModel save(RoleModel roleModel);
+    Role updateRole(Role role);
 
     Role create(Role roleModel);
 
@@ -19,4 +19,8 @@ public interface RoleService {
     List<RoleModel> findByIdIn(List<String> id);
 
     Optional<Role> findById(String id);
+
+    Role removePermissionFromRole(String roleId, String permission);
+
+    Role addPermissionToRole(String roleId, String permission);
 }
