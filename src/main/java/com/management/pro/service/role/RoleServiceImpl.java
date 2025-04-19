@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -130,6 +131,16 @@ public class RoleServiceImpl implements RoleService {
         log.info("Begin addPermissionToRole  , roleId = {}, permission = {}", roleId, permission);
         RoleModel role = findRoleOrFail(roleId);
         return addPermissionAndSave(role, permission);
+    }
+
+    @Override
+    public String getCurrentRole() {
+        List<String> roleList = Optional.ofNullable(SecurityContextHandler.getRoles()).orElse(Collections.emptyList());
+        List<RoleModel> roleModelList = Optional.ofNullable(findByIdIn(List.copyOf(roleList))).orElse(List.of());
+        return roleModelList.stream()
+                .findFirst()
+                .map(RoleModel::getRole)
+                .orElse("");
     }
 
 

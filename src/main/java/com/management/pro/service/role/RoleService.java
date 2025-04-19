@@ -23,4 +23,6 @@ public interface RoleService {
     Role removePermissionFromRole(String roleId, String permission);
 
     Role addPermissionToRole(String roleId, String permission);
+
+    String getCurrentRole();
 }

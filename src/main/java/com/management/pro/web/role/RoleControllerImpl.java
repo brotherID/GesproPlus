@@ -60,5 +60,10 @@ public class RoleControllerImpl implements RoleController {
         return ResponseEntity.ok(roleService.addPermissionToRole(roleId, permission));
     }
 
+    @Override
+    public ResponseEntity<String> getCurrentRole() {
+        return ResponseEntity.ok(roleService.getCurrentRole());
+    }
+
 
 }

@@ -43,4 +43,7 @@ public interface RoleController {
     ResponseEntity<Role> addPermissionToRole(
             @PathVariable String roleId,
             @PathVariable String permission);
+
+    @GetMapping("/current")
+    ResponseEntity<String> getCurrentRole();
 }
