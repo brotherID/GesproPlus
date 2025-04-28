@@ -72,14 +72,14 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public UserAccountResponse getUserById(String idUserAccount) {
-        UserAccount userAccount = userAccountRepository.findById(idUserAccount).orElseThrow(()-> new ConflictException("User not found"));
+        UserAccount userAccount = userAccountRepository.findById(idUserAccount).orElseThrow(()-> new ConflictException(appMessagesProperties.getUserNotFound()));
         return userAccountMapper.toUserAccountResponse(userAccount);
     }
 
     @Override
     public UserAccountResponse updateUser(String idUserAccount, UserAccountRequest userAccountRequest) {
         UserAccount user = userAccountRepository.findById(idUserAccount)
-                .orElseThrow(() -> new ConflictException("User not found"));
+                .orElseThrow(() -> new ConflictException(appMessagesProperties.getUserNotFound()));
         UserKeycloak userKeycloak = getUserKeycloak(userAccountRequest);
         String token = keycloakTokenService.getAdminToken();
         HttpHeaders headers = new HttpHeaders();
@@ -94,7 +94,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         );
         if (userAccountRequest.getRoleId() != null) {
             Role role = roleRepository.findById(userAccountRequest.getRoleId())
-                    .orElseThrow(() -> new ConflictException("Role not found"));
+                    .orElseThrow(() -> new ConflictException(appMessagesProperties.getRoleNotFound()));
             user.setRole(role);
         }
         userAccountMapper.updateEntity(user, userAccountRequest);
@@ -106,7 +106,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public void deleteUser(String idUserAccount) {
         userAccountRepository.findById(idUserAccount)
-                .orElseThrow(() -> new ConflictException("User not found"));
+                .orElseThrow(() -> new ConflictException(appMessagesProperties.getUserNotFound()));
         String token = keycloakTokenService.getAdminToken();
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
@@ -118,7 +118,7 @@ public class UserAccountServiceImpl implements UserAccountService {
                 Void.class
         );
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new ConflictException("Failed to delete user in Keycloak");
+            throw new ConflictException(appMessagesProperties.getFailedToDeleteUserInKeycloak());
         }
         userAccountRepository.deleteById(idUserAccount);
     }
@@ -127,7 +127,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     public UserAccountResponse resetPassword(String idUserAccount, CredentialDto credentialDto) {
         log.info("Begin resetPassword : idUserAccount {} , {}", idUserAccount, credentialDto);
         UserAccount user = userAccountRepository.findById(idUserAccount)
-                .orElseThrow(() -> new ConflictException("User not found"));
+                .orElseThrow(() -> new ConflictException(appMessagesProperties.getUserNotFound()));
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(keycloakTokenService.getAdminToken());
         HttpEntity<CredentialDto> entity = new HttpEntity<>(credentialDto,headers);
@@ -138,7 +138,7 @@ public class UserAccountServiceImpl implements UserAccountService {
                 Void.class
         );
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new ConflictException("Failed to update password in Keycloak");
+            throw new ConflictException(appMessagesProperties.getFailedToUpdatePasswordUserInKeycloak());
         }
         user.setCredentials(
                 Stream.of(credentialMapper.toCredential(credentialDto))

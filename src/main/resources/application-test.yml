@@ -19,11 +19,6 @@ spring:
   liquibase:
     enabled: false
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          secret: super-secret-key-must-be-32-bytes!
 
 
 

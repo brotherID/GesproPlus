@@ -33,12 +33,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -121,7 +125,7 @@ public class UserAccountControllerTest {
         Mockito.when(roleAccessHandler.hasPermission(any()))
                 .thenReturn(true);
         Mockito.when(keycloakTokenService.getAdminToken())
-                .thenReturn("fake-token");
+                .thenReturn("fake-access-token");
         Mockito.when(restTemplate.postForEntity(
                 Mockito.anyString(),
                 Mockito.any(HttpEntity.class),
@@ -130,9 +134,9 @@ public class UserAccountControllerTest {
         UserAccountRequest userAccountRequest = new UserAccountRequest();
         userAccountRequest.setUsername("user2");
         userAccountRequest.setEmail("user2@gmail.com");
-        userAccountRequest.setRoleId("superadmin");
+        userAccountRequest.setRoleId("SUPERADMIN");
         mockMvc.perform(post("/api/v1/users")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + MockJwtUtils.generateToken("superadmin", "superadmin"))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + MockJwtUtils.generateToken("superadmin", "SUPERADMIN"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(userAccountRequest)))
                 .andExpect(status().isCreated());

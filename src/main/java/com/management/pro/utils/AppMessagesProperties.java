@@ -22,4 +22,7 @@ public class AppMessagesProperties {
     private String permissionAlreadyExists;
     private String userExistsWithSameEmail;
     private String failedToCreateUserInKeycloak;
+    private String userNotFound;
+    private String failedToDeleteUserInKeycloak;
+    private String failedToUpdatePasswordUserInKeycloak;
 }

@@ -10,3 +10,6 @@ app:
     permission-already-exists: "Permission already exists"
     user-exists-with-same-email: "User exists with same email"
     failed-to-create-user-in-Keycloak: "Failed to create user in Keycloak : "
+    user-not-found: "User not found"
+    failed-to-delete-user-in-keycloak: "Failed to delete user in Keycloak"
+    failed-to-update-password-user-in-keycloak: "Failed to update password in Keycloak"
