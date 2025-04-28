@@ -1,17 +1,19 @@
 package com.management.pro.service.permission;
 
-import com.management.pro.model.PermissionModel;
+import com.management.pro.dtos.permission.PermissionRequest;
+import com.management.pro.dtos.permission.PermissionResponse;
+import com.management.pro.model.Permission;
 
 import java.util.List;
 
 public interface PermissionService {
-    List<PermissionModel> getAllPermissions();
+    List<Permission> getAllPermissions();
 
-    PermissionModel getPermissionById(String id);
+    PermissionResponse getPermissionById(String id);
 
-    PermissionModel createPermission(PermissionModel permission);
+    PermissionResponse createPermission(PermissionRequest permissionRequest);
 
-    PermissionModel updatePermission(PermissionModel permission);
+    PermissionResponse updatePermission(String idPermission ,PermissionRequest permissionRequest);
 
     void deletePermission(String id);
 

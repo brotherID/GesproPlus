@@ -1,0 +1,12 @@
+app:
+  messages:
+    role-already-exists: "Role already exists"
+    permissions-do-not-exist: "Permissions do not exist"
+    role-not-found: "Role not found "
+    permission-not-found-in-role: "Permission not found in role"
+    permission-already-exists-in-role: "Permission already exists in role"
+    permission-not-found: "Permission not found"
+    permission-not-found-with-id: "Permission not found with id :"
+    permission-already-exists: "Permission already exists"
+    user-exists-with-same-email: "User exists with same email"
+    failed-to-create-user-in-Keycloak: "Failed to create user in Keycloak : "

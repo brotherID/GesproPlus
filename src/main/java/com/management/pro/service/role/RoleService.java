@@ -1,28 +1,28 @@
 package com.management.pro.service.role;
 
-import com.management.pro.dtos.Role;
-import com.management.pro.model.RoleModel;
+import com.management.pro.dtos.role.RoleRequest;
+import com.management.pro.dtos.role.RoleResponse;
+import com.management.pro.model.Role;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public interface RoleService {
-    List<RoleModel> findAll();
+    List<RoleResponse> findAll();
 
-    Role updateRole(Role role);
+    RoleResponse updateRole(RoleRequest roleUpdateRequest);
 
-    Role create(Role roleModel);
+    RoleResponse create(RoleRequest roleAddRequest);
 
     void delete(String id);
 
-    List<RoleModel> findByIdIn(List<String> id);
+    List<Role> findByIdIn(List<String> id);
 
-    Optional<Role> findById(String id);
+    RoleResponse findById(String id);
 
-    Role removePermissionFromRole(String roleId, String permission);
+    RoleResponse removePermissionFromRole(String roleId, String permission);
 
-    Role addPermissionToRole(String roleId, String permission);
+    RoleResponse addPermissionToRole(String roleId, String permission);
 
     String getCurrentRole();
 }

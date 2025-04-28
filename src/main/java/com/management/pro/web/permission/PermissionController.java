@@ -1,7 +1,7 @@
 package com.management.pro.web.permission;
 
-import com.management.pro.dtos.Permission;
-import com.management.pro.tools.Permissions;
+import com.management.pro.dtos.permission.PermissionRequest;
+import com.management.pro.dtos.permission.PermissionResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,22 +13,22 @@ import java.util.List;
 public interface PermissionController {
 
     @GetMapping
-    @PreAuthorize("@roleAccessHandler.hasPermission(\"" + Permissions.PERMISSION_GET_PERMISSION + "\")")
-    ResponseEntity<List<Permission>> getAllPermissions();
+    @PreAuthorize("@roleAccessHandler.hasPermission(T(com.management.pro.enums.PermissionEnum).PERMISSION_GET)")
+    ResponseEntity<List<PermissionResponse>> getAllPermissions();
 
     @GetMapping("/{id}")
-    @PreAuthorize("@roleAccessHandler.hasPermission(\"" + Permissions.PERMISSION_GET_PERMISSION + "\")")
-    ResponseEntity<Permission> getPermissionById(@PathVariable String id);
+    @PreAuthorize("@roleAccessHandler.hasPermission(T(com.management.pro.enums.PermissionEnum).PERMISSION_GET)")
+    ResponseEntity<PermissionResponse> getPermissionById(@PathVariable String id);
 
     @PostMapping
-    @PreAuthorize("@roleAccessHandler.hasPermission(\"" + Permissions.PERMISSION_ADD_PERMISSION + "\")")
-    ResponseEntity<Permission> createPermission(@RequestBody Permission permission);
+    @PreAuthorize("@roleAccessHandler.hasPermission(T(com.management.pro.enums.PermissionEnum).PERMISSION_ADD)")
+    ResponseEntity<PermissionResponse> createPermission(@RequestBody PermissionRequest permissionRequest);
 
-    @PutMapping
-    @PreAuthorize("@roleAccessHandler.hasPermission(\"" + Permissions.PERMISSION_PUT_PERMISSION + "\")")
-    ResponseEntity<Permission> updatePermission(@RequestBody Permission permission);
+    @PutMapping("/{id}")
+    @PreAuthorize("@roleAccessHandler.hasPermission(T(com.management.pro.enums.PermissionEnum).PERMISSION_PUT)")
+    ResponseEntity<PermissionResponse> updatePermission(@PathVariable String id ,  @RequestBody PermissionRequest permissionRequest);
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("@roleAccessHandler.hasPermission(\"" + Permissions.PERMISSION_DELETE_PERMISSION + "\")")
+    @PreAuthorize("@roleAccessHandler.hasPermission(T(com.management.pro.enums.PermissionEnum).PERMISSION_DELETE)")
     ResponseEntity<Void> deletePermission(@PathVariable String id);
 }

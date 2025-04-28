@@ -35,3 +35,8 @@ spring:
           jwk-set-uri: http://localhost:8089/realms/bdcc_realm/protocol/openid-connect/certs
 
 
+keycloak:
+  token:
+    grant-type: client_credentials
+    client-id: gesproPlus_client-ang
+    client-secret: 2nCGkl4ajccclk38whlAf5CUMkITdNyN

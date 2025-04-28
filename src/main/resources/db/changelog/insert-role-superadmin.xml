@@ -13,115 +13,114 @@
             <column name="is_super_admin" valueBoolean="true"/>
         </insert>
 
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="ADD_CANDIDATE"/>
+            <column name="permission_id" value="ADD_CANDIDATE"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="EDIT_CANDIDATE"/>
+            <column name="permission_id" value="EDIT_CANDIDATE"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="ASSIGN_TECHNICAL_REFERENTS"/>
+            <column name="permission_id" value="ASSIGN_TECHNICAL_REFERENTS"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="EDIT_TECHNICAL_REFERENTS"/>
+            <column name="permission_id" value="EDIT_TECHNICAL_REFERENTS"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="ADD_TECHNICAL_INTERVIEW_DATE"/>
+            <column name="permission_id" value="ADD_TECHNICAL_INTERVIEW_DATE"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="VIEW_PROPOSALS"/>
+            <column name="permission_id" value="VIEW_PROPOSALS"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="EDIT_STATUS"/>
+            <column name="permission_id" value="EDIT_STATUS"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="ADD_CANDIDATE_OBSERVATION"/>
+            <column name="permission_id" value="ADD_CANDIDATE_OBSERVATION"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="ADD_GROUP"/>
+            <column name="permission_id" value="ADD_GROUP"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="EDIT_GROUP"/>
+            <column name="permission_id" value="EDIT_GROUP"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="ADD_SUBGROUP"/>
+            <column name="permission_id" value="ADD_SUBGROUP"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="EDIT_SUBGROUP"/>
+            <column name="permission_id" value="EDIT_SUBGROUP"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="ADD_TECHNO"/>
+            <column name="permission_id" value="ADD_TECHNO"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="EDIT_TECHNO"/>
+            <column name="permission_id" value="EDIT_TECHNO"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="ADD_TEMPLATE"/>
+            <column name="permission_id" value="ADD_TEMPLATE"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="VIEW_CANDIDATE_INFORMATION"/>
+            <column name="permission_id" value="VIEW_CANDIDATE_INFORMATION"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="EVALUTE_CANDIDATE"/>
+            <column name="permission_id" value="EVALUTE_CANDIDATE"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="REQUEST_REQUALIFICATION"/>
+            <column name="permission_id" value="REQUEST_REQUALIFICATION"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="EVALUTE_KATA"/>
+            <column name="permission_id" value="EVALUTE_KATA"/>
         </insert>
 
-        <!-- Permissions système -->
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="PERMISSION_ADD"/>
+            <column name="permission_id" value="PERMISSION_ADD"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="PERMISSION_PUT"/>
+            <column name="permission_id" value="PERMISSION_PUT"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="PERMISSION_DELETE"/>
+            <column name="permission_id" value="PERMISSION_DELETE"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="PERMISSION_GET"/>
+            <column name="permission_id" value="PERMISSION_GET"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="ROLE_ADD"/>
+            <column name="permission_id" value="ROLE_ADD"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="ROLE_PUT"/>
+            <column name="permission_id" value="ROLE_PUT"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="ROLE_DELETE"/>
+            <column name="permission_id" value="ROLE_DELETE"/>
         </insert>
-        <insert tableName="roles_permissions">
+        <insert tableName="role_permission">
             <column name="role_id" value="SUPERADMIN"/>
-            <column name="permission" value="ROLE_GET"/>
+            <column name="permission_id" value="ROLE_GET"/>
         </insert>
     </changeSet>
 

@@ -1,18 +1,29 @@
 package com.management.pro.mapper;
 
-import com.management.pro.dtos.Role;
-import com.management.pro.model.RoleModel;
-import org.mapstruct.Mapper;
+import com.management.pro.dtos.role.RoleRequest;
+import com.management.pro.dtos.role.RoleResponse;
+import com.management.pro.model.Role;
+import org.mapstruct.*;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
 
+    @Mapping(target = "permissions", ignore = true)
+    @Mapping(target = "id", source = "role")
+    Role toRole(RoleRequest roleAddRequest);
 
-    RoleModel toRoleModel(Role role);
+    @Mapping(target = "permissionsDto", ignore = true)
+    @Mapping(target = "role", source = "id")
+    RoleResponse toRoleDto(Role role);
 
-    Role toRole(RoleModel roleModel);
+    @Mapping(target = "permissions", ignore = true)
+    List<RoleResponse> toRoleDtos(List<Role> roles);
 
-    List<Role> toRoleList(List<RoleModel> roleModelList);
+    @Mapping(target = "permissionsDto", ignore = true)
+    List<Role> toRoles(List<RoleRequest> roleAddRequest);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntity(@MappingTarget Role role, RoleRequest roleRequest);
 }

@@ -1,46 +1,45 @@
 package com.management.pro.web.role;
 
-import com.management.pro.dtos.Role;
-import com.management.pro.tools.Permissions;
+import com.management.pro.dtos.role.RoleRequest;
+import com.management.pro.dtos.role.RoleResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequestMapping("/api/v1/settings/role")
 @CrossOrigin("*")
 public interface RoleController {
 
     @GetMapping
-    @PreAuthorize("@roleAccessHandler.hasPermission(\"" + Permissions.ROLE_GET_PERMISSION + "\")")
-    ResponseEntity<List<Role>> getAllRoles();
+    @PreAuthorize("@roleAccessHandler.hasPermission(T(com.management.pro.enums.PermissionEnum).ROLE_GET)")
+    ResponseEntity<List<RoleResponse>> getAllRoles();
 
     @GetMapping("/{id}")
-    @PreAuthorize("@roleAccessHandler.hasPermission(\"" + Permissions.ROLE_GET_PERMISSION + "\")")
-    ResponseEntity<Optional<Role>> getRoleById(@PathVariable String id);
+    @PreAuthorize("@roleAccessHandler.hasPermission(T(com.management.pro.enums.PermissionEnum).ROLE_GET)")
+    ResponseEntity<RoleResponse> getRoleById(@PathVariable String id);
 
     @PostMapping
-    @PreAuthorize("@roleAccessHandler.hasPermission(\"" + Permissions.ROLE_ADD_PERMISSION + "\")")
-    ResponseEntity<Role> createRole(@RequestBody Role roleDTO);
+    @PreAuthorize("@roleAccessHandler.hasPermission(T(com.management.pro.enums.PermissionEnum).ROLE_ADD)")
+    ResponseEntity<RoleResponse> createRole(@RequestBody RoleRequest roleAddRequest);
 
     @PutMapping
-    @PreAuthorize("@roleAccessHandler.hasPermission(\"" + Permissions.ROLE_PUT_PERMISSION + "\")")
-    ResponseEntity<Role> updateRole(@RequestBody Role roleDTO);
+    @PreAuthorize("@roleAccessHandler.hasPermission(T(com.management.pro.enums.PermissionEnum).ROLE_PUT)")
+    ResponseEntity<RoleResponse> updateRole(@RequestBody RoleRequest roleUpdateRequest);
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("@roleAccessHandler.hasPermission(\"" + Permissions.ROLE_DELETE_PERMISSION + "\")")
+    @PreAuthorize("@roleAccessHandler.hasPermission(T(com.management.pro.enums.PermissionEnum).ROLE_DELETE)")
     ResponseEntity<Void> deleteRole(@PathVariable String id);
 
     @DeleteMapping("/{roleId}/permissions/{permission}")
-    @PreAuthorize("@roleAccessHandler.hasPermission(\"" + Permissions.ROLE_DELETE_PERMISSION + "\")")
-    ResponseEntity<Role> removePermissionFromRole(@PathVariable String roleId,
+    @PreAuthorize("@roleAccessHandler.hasPermission(T(com.management.pro.enums.PermissionEnum).ROLE_DELETE)")
+    ResponseEntity<RoleResponse> removePermissionFromRole(@PathVariable String roleId,
                                                  @PathVariable String permission);
 
-    @PostMapping("/{roleId}/permissions/{permission}")
-    @PreAuthorize("@roleAccessHandler.hasPermission(\"" + Permissions.PERMISSION_PUT_PERMISSION + "\")")
-    ResponseEntity<Role> addPermissionToRole(
+    @PutMapping("/{roleId}/permissions/{permission}")
+    @PreAuthorize("@roleAccessHandler.hasPermission(T(com.management.pro.enums.PermissionEnum).ROLE_PUT)")
+    ResponseEntity<RoleResponse> addPermissionToRole(
             @PathVariable String roleId,
             @PathVariable String permission);
 

@@ -1,18 +1,18 @@
-package com.management.pro.dtos;
+package com.management.pro.dtos.role;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
-    private String id;
+public class RoleResponse {
     private String role;
     private Boolean isAdmin;
     private Boolean isSuperAdmin;
-    private List<String> permissionList;
+    private List<String> permissionsDto = new ArrayList<>();
 }

@@ -1,7 +1,10 @@
 package com.management.pro.repository;
 
-import com.management.pro.model.PermissionModel;
+import com.management.pro.model.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PermissionRepository extends JpaRepository<PermissionModel, String> {
+import java.util.Optional;
+
+public interface PermissionRepository extends JpaRepository<Permission, String> {
+    Optional<Permission> findByPermission(String permissionName);
 }

@@ -1,18 +1,22 @@
 package com.management.pro.mapper;
 
-import com.management.pro.dtos.Permission;
-import com.management.pro.model.PermissionModel;
+import com.management.pro.dtos.permission.PermissionRequest;
+import com.management.pro.dtos.permission.PermissionResponse;
+import com.management.pro.model.Permission;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface PermissionMapper {
 
-    Permission toPermission(PermissionModel permissionModel);
+    PermissionResponse toPermissionDto(Permission permission);
 
-    PermissionModel toPermissionModel(Permission permission);
+    @Mapping(target = "id", source = "permission")
+    Permission toPermission(PermissionRequest permissionRequest);
 
-    List<Permission> toPermissionList(List<PermissionModel> permissionModelList);
+    List<PermissionResponse> toPermissionDtos(List<Permission> permissions);
+
 
 }

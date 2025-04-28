@@ -7,11 +7,11 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@Entity(name = "permission")
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PermissionModel {
+public class Permission {
     @Id
     private String id;
     private String permission;

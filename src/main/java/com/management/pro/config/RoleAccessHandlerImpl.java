@@ -1,6 +1,6 @@
 package com.management.pro.config;
 
-import com.management.pro.model.RoleModel;
+import com.management.pro.model.Role;
 import com.management.pro.service.role.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +21,14 @@ public class RoleAccessHandlerImpl implements RoleAccessHandler {
 
     @Override
     public Boolean hasPermission(String permission) {
-        log.info("Checking if role access has permission: " + permission);
+        log.info("Checking if role access has permission : {}" , permission);
         if (Boolean.FALSE.equals(securityConfigProperties.getEnabled())) {
             return true;
         }
         List<String> roleList = Optional.ofNullable(SecurityContextHandler.getRoles()).orElse(Collections.emptyList());
-        log.info("roleList : " + roleList);
-        List<RoleModel> roleModelList = Optional.ofNullable(this.roleService.findByIdIn(List.copyOf(roleList))).orElse(List.of());
-        log.info("roleModelList : " + roleModelList);
+        log.info("roleList :  {} " , roleList);
+        List<Role> roleModelList = Optional.ofNullable(this.roleService.findByIdIn(List.copyOf(roleList))).orElse(List.of());
+        log.info("roleModelList : {} " , roleModelList);
         boolean hasAdminSuperAdminRole = roleModelList.stream()
                 .anyMatch(role -> Boolean.TRUE.equals(role.getIsAdmin()) || Boolean.TRUE.equals(role.getIsSuperAdmin()));
         log.info("Has Admin Role or Super Admin Role: {}", hasAdminSuperAdminRole);
@@ -36,17 +36,17 @@ public class RoleAccessHandlerImpl implements RoleAccessHandler {
             return true;
         }
         return roleModelList.stream()
-                .flatMap(role -> role.getPermissionList().stream())
-                .anyMatch(code -> code.equals(permission));
+                .flatMap(role -> role.getPermissions().stream())
+                .anyMatch(code -> code.getPermission().equals(permission));
     }
 
 
     @Override
     public Boolean hasRole(String role) {
         List<String> roleList = Optional.ofNullable(SecurityContextHandler.getRoles()).orElse(Collections.emptyList());
-        List<RoleModel> roleModelList = Optional.ofNullable(this.roleService.findByIdIn(List.copyOf(roleList))).orElse(List.of());
+        List<Role> roleModelList = Optional.ofNullable(this.roleService.findByIdIn(List.copyOf(roleList))).orElse(List.of());
         return roleModelList.stream()
-                .map(RoleModel::getId)
+                .map(Role::getId)
                 .anyMatch(code -> code.equals(role));
     }
 }

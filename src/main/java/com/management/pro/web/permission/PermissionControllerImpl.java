@@ -1,8 +1,8 @@
 package com.management.pro.web.permission;
 
-import com.management.pro.dtos.Permission;
+import com.management.pro.dtos.permission.PermissionRequest;
+import com.management.pro.dtos.permission.PermissionResponse;
 import com.management.pro.mapper.PermissionMapper;
-import com.management.pro.model.PermissionModel;
 import com.management.pro.service.permission.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,34 +18,30 @@ public class PermissionControllerImpl implements PermissionController {
     private final PermissionMapper permissionMapper;
 
     @Override
-    public ResponseEntity<List<Permission>> getAllPermissions() {
-        List<PermissionModel> permissions = permissionService.getAllPermissions();
-        return ResponseEntity.ok(permissionMapper.toPermissionList(permissions));
+    public ResponseEntity<List<PermissionResponse>> getAllPermissions() {
+        return ResponseEntity.ok(permissionMapper.toPermissionDtos(permissionService.getAllPermissions()));
+    }
+
+
+
+    @Override
+    public ResponseEntity<PermissionResponse> getPermissionById(String id) {
+        return ResponseEntity.ok(permissionService.getPermissionById(id));
     }
 
     @Override
-    public ResponseEntity<Permission> getPermissionById(String id) {
-        PermissionModel permission = permissionService.getPermissionById(id);
-        return ResponseEntity.ok(permissionMapper.toPermission(permission));
+    public ResponseEntity<PermissionResponse> createPermission(PermissionRequest permissionRequest) {
+        return ResponseEntity.ok(permissionService.createPermission(permissionRequest));
     }
 
     @Override
-    public ResponseEntity<Permission> createPermission(Permission permissionDTO) {
-        PermissionModel permission = permissionMapper.toPermissionModel(permissionDTO);
-        PermissionModel createdPermission = permissionService.createPermission(permission);
-        return ResponseEntity.ok(permissionMapper.toPermission(createdPermission));
-    }
-
-    @Override
-    public ResponseEntity<Permission> updatePermission(Permission permissionDTO) {
-        PermissionModel permission = permissionMapper.toPermissionModel(permissionDTO);
-        PermissionModel updatedPermission = permissionService.updatePermission(permission);
-        return ResponseEntity.ok(permissionMapper.toPermission(updatedPermission));
+    public ResponseEntity<PermissionResponse> updatePermission(String id ,  PermissionRequest permissionRequest) {
+        return ResponseEntity.ok(permissionService.updatePermission(id,permissionRequest));
     }
 
     @Override
     public ResponseEntity<Void> deletePermission(String id) {
         permissionService.deletePermission(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

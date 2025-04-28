@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="insert-permission-user" author="sara">
+        <insert tableName="permission">
+            <column name="id" value="USER_ADD"/>
+            <column name="permission" value="USER_ADD"/>
+        </insert>
+        <insert tableName="permission">
+            <column name="id" value="USER_PUT"/>
+            <column name="permission" value="USER_PUT"/>
+        </insert>
+        <insert tableName="permission">
+            <column name="id" value="USER_DELETE"/>
+            <column name="permission" value="USER_DELETE"/>
+        </insert>
+        <insert tableName="permission">
+            <column name="id" value="USER_GET"/>
+            <column name="permission" value="USER_GET"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

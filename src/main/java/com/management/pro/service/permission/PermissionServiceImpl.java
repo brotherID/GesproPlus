@@ -1,63 +1,81 @@
 package com.management.pro.service.permission;
 
+import com.management.pro.dtos.permission.PermissionRequest;
+import com.management.pro.dtos.permission.PermissionResponse;
 import com.management.pro.exceptions.ConflictException;
-import com.management.pro.exceptions.NotFoundException;
-import com.management.pro.model.PermissionModel;
+import com.management.pro.mapper.PermissionMapper;
+import com.management.pro.model.Permission;
+import com.management.pro.model.Role;
 import com.management.pro.repository.PermissionRepository;
+import com.management.pro.repository.RoleRepository;
+import com.management.pro.utils.AppMessagesProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class PermissionServiceImpl implements PermissionService {
 
-    public static final String PERMISSION_NOT_FOUND_WITH_ID = "Permission not found with id :";
-    public static final String PERMISSION_ALREADY_EXISTS = "Permission already exists";
     private final PermissionRepository permissionRepository;
+    private final PermissionMapper permissionMapper;
+    private final RoleRepository roleRepository;
+    private final AppMessagesProperties appMessagesProperties;
 
     @Override
-    public List<PermissionModel> getAllPermissions() {
+    public List<Permission> getAllPermissions() {
         return permissionRepository.findAll();
     }
 
-    @Override
-    public PermissionModel getPermissionById(String id) {
-        return permissionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(PERMISSION_NOT_FOUND_WITH_ID  + id));
+    private Permission findPermissionOrFail(String idPermission) {
+        return permissionRepository.findById(idPermission)
+                .orElseThrow(() -> new ConflictException(appMessagesProperties.getPermissionNotFoundWithId()   + idPermission));
     }
 
     @Override
-    public PermissionModel createPermission(PermissionModel permission) {
-        permissionRepository.findById(permission.getId())
+    public PermissionResponse getPermissionById(String idPermission) {
+         log.info("begin getPermissionById : {}" , idPermission);
+         Permission permission = findPermissionOrFail(idPermission) ;
+         return  permissionMapper.toPermissionDto(permission);
+    }
+
+    @Override
+    public PermissionResponse createPermission(PermissionRequest permissionRequest) {
+        log.info("Begin createPermission : {}",  permissionRequest);
+        permissionRepository.findById(permissionRequest.getPermission())
                 .ifPresent(permissionFounded -> {
-                    throw new ConflictException(PERMISSION_ALREADY_EXISTS);
+                    throw new ConflictException(appMessagesProperties.getPermissionAlreadyExists());
                 });
-        return permissionRepository.save(permission);
+        Permission permission =  permissionMapper.toPermission(permissionRequest);
+        return permissionMapper.toPermissionDto(permissionRepository.save(permission));
     }
 
     @Override
-    public PermissionModel updatePermission(PermissionModel permission) {
-        log.info("Begin update permission : {}", permission);
-        PermissionModel existingPermission = permissionRepository.findById(permission.getId())
-                .orElseThrow(() -> new NotFoundException(PERMISSION_NOT_FOUND_WITH_ID + " " + permission.getId()));
+    public PermissionResponse updatePermission(String idPermission ,PermissionRequest permissionRequest) {
+        log.info("Begin updatePermission : {} , {}",idPermission ,permissionRequest);
+        Permission existingPermission = permissionRepository.findById(idPermission)
+                .orElseThrow(() -> new ConflictException(appMessagesProperties.getPermissionNotFoundWithId()  + " " + idPermission));
 
-        PermissionModel updatedPermission = PermissionModel.builder()
-                .id(existingPermission.getId())
-                .permission(permission.getPermission() != null ? permission.getPermission() : existingPermission.getPermission())
-                .build();
-
-        return permissionRepository.save(updatedPermission);
+        if(permissionRequest.getPermission() != null) {
+           existingPermission.setPermission(permissionRequest.getPermission());
+        }
+        Permission updatedPermission =  permissionRepository.save(existingPermission);
+        log.info("updatedPermission : {}", updatedPermission);
+        return permissionMapper.toPermissionDto(updatedPermission);
     }
 
     @Override
     public void deletePermission(String id) {
-        if (!permissionRepository.existsById(id)) {
-            throw new NotFoundException(PERMISSION_NOT_FOUND_WITH_ID + id);
-        }
-        permissionRepository.deleteById(id);
+        log.info("Begin deletePermission : {}", id);
+        Permission permission = findPermissionOrFail(id);
+        List<Role> rolesToUpdate = roleRepository.findAll().stream()
+                .peek(role -> role.getPermissions().removeIf(p -> p.getId().equals(id)))
+                .collect(Collectors.toList());
+        roleRepository.saveAll(rolesToUpdate);
+        permissionRepository.delete(permission);
     }
 }
