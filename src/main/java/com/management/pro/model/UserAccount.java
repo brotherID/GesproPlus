@@ -21,10 +21,12 @@ public class UserAccount {
     private String lastName;
     private String email;
     private boolean emailVerified;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
-    @ElementCollection
-    @CollectionTable(name = "user_credentials", joinColumns = @JoinColumn(name = "user_id"))
-    private List<Credential> credentials = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<Role> roles = new ArrayList<>();
+    private String password;
 }

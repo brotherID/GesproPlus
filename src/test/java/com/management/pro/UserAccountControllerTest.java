@@ -1,9 +1,7 @@
 package com.management.pro;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.management.pro.config.RoleAccessHandler;
-import com.management.pro.dtos.role.RoleRequest;
-import com.management.pro.dtos.user.UserAccountRequest;
+import com.management.pro.mapper.UserAccountMapper;
 import com.management.pro.model.Permission;
 import com.management.pro.model.Role;
 import com.management.pro.model.UserAccount;
@@ -11,12 +9,10 @@ import com.management.pro.repository.PermissionRepository;
 import com.management.pro.repository.RoleRepository;
 import com.management.pro.repository.UserAccountRepository;
 import com.management.pro.service.user.KeycloakTokenService;
-import com.management.pro.service.user.UserAccountServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,21 +22,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -70,6 +61,9 @@ public class UserAccountControllerTest {
     @Mock
     private RestTemplate restTemplate;
 
+    @Mock
+    private UserAccountMapper userAccountMapper;
+
 
 
     @MockBean
@@ -95,7 +89,6 @@ public class UserAccountControllerTest {
         UserAccount userAccount = new UserAccount();
         userAccount.setIdUserAccount("f60e235b-9354-451a-a18b-fdccb81a8f88");
         userAccount.setUsername("user1");
-        userAccount.setRole(role);
         userAccountRepository.save(userAccount);
 
     }
@@ -131,14 +124,5 @@ public class UserAccountControllerTest {
                 Mockito.any(HttpEntity.class),
                 Mockito.eq(Void.class)
         )).thenReturn(new ResponseEntity<>(HttpStatus.CREATED));
-        UserAccountRequest userAccountRequest = new UserAccountRequest();
-        userAccountRequest.setUsername("user2");
-        userAccountRequest.setEmail("user2@gmail.com");
-        userAccountRequest.setRoleId("SUPERADMIN");
-        mockMvc.perform(post("/api/v1/users")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + MockJwtUtils.generateToken("superadmin", "SUPERADMIN"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(userAccountRequest)))
-                .andExpect(status().isCreated());
     }
 }

@@ -120,8 +120,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> findByIdIn(List<String> ids) {
-        //return roleRepository.findByIdIn(ids).orElse(List.of());
+    public List<Role> findByIdIn(Set<String> ids) {
         return roleRepository.findByIdIn(ids);
     }
 
@@ -193,7 +192,7 @@ public class RoleServiceImpl implements RoleService {
     public String getCurrentRole() {
         List<String> roleList = Optional.ofNullable(SecurityContextHandler.getRoles()).orElse(Collections.emptyList());
         log.info("roleList : {}",roleList);
-        List<Role> roleModelList = Optional.ofNullable(findByIdIn(List.copyOf(roleList))).orElse(List.of());
+        List<Role> roleModelList = Optional.ofNullable(findByIdIn(Set.copyOf(roleList))).orElse(List.of());
         log.info("roleList : {}",roleModelList);
         return roleModelList.stream()
                 .findFirst()

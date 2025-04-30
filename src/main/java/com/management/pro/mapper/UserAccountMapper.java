@@ -11,9 +11,9 @@ import java.util.List;
 public interface UserAccountMapper {
 
     @Mapping(target = "idUserAccount", ignore = true)
+    @Mapping(target = "roles", ignore = true)
     UserAccount toUserAccount(UserAccountRequest userAccountRequest);
 
-    @Mapping(target = "roleId", source = "role.id")
     UserAccountResponse toUserAccountResponse(UserAccount userAccount);
 
     List<UserAccountResponse> toUserAccountResponses(List<UserAccount> userAccounts);

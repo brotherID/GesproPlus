@@ -5,7 +5,6 @@ import com.management.pro.dtos.user.UserAccountRequest;
 import com.management.pro.dtos.user.UserAccountResponse;
 import com.management.pro.dtos.user.UserKeycloak;
 import com.management.pro.exceptions.ConflictException;
-import com.management.pro.mapper.CredentielMapper;
 import com.management.pro.mapper.UserAccountMapper;
 import com.management.pro.model.Role;
 import com.management.pro.model.UserAccount;
@@ -14,14 +13,15 @@ import com.management.pro.repository.UserAccountRepository;
 import com.management.pro.utils.AppMessagesProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +34,6 @@ public class UserAccountServiceImpl implements UserAccountService {
     private final UserAccountMapper userAccountMapper;
     private final KeycloakTokenService keycloakTokenService;
     private final AppMessagesProperties appMessagesProperties;
-    @Qualifier("credentielMapperImpl")
-    private final CredentielMapper credentialMapper;
 
     @Override
     public void createUser(UserAccountRequest userAccountRequest) {
@@ -56,14 +54,30 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
         String location = response.getHeaders().getLocation().toString();
         String userId = location.substring(location.lastIndexOf('/') + 1);
-        log.info("**** userId : {}", userId);
-        Role role = roleRepository.findById(userAccountRequest.getRoleId())
-                .orElseThrow(() -> new ConflictException(appMessagesProperties.getRoleNotFound()));
         UserAccount user = userAccountMapper.toUserAccount(userAccountRequest);
         user.setIdUserAccount(userId);
-        user.setRole(role);
+        user.setRoles(findRolesIfExist(userAccountRequest.getRolesName()));
         userAccountRepository.save(user);
     }
+
+
+
+    private List<Role> findRolesIfExist(List<String> roles) {
+        log.info("findRolesIfExist [roles: {}] ...", roles);
+        if (!CollectionUtils.isEmpty(roles)) {
+            Set<String> roleSet = new HashSet<>(roles);
+            List<Role> persistedRoles = roleRepository.findByIdIn(roleSet);
+            if (persistedRoles.size() != roleSet.size()) {
+                throw new ConflictException("Some roles do not exist");
+            }
+            return persistedRoles;
+        }
+        log.info("findRolesIfExist [roles: {}] Done", roles);
+        return null;
+    }
+
+
+
 
     @Override
     public List<UserAccountResponse> getAllUsers() {
@@ -92,11 +106,6 @@ public class UserAccountServiceImpl implements UserAccountService {
                 entity,
                 Void.class
         );
-        if (userAccountRequest.getRoleId() != null) {
-            Role role = roleRepository.findById(userAccountRequest.getRoleId())
-                    .orElseThrow(() -> new ConflictException(appMessagesProperties.getRoleNotFound()));
-            user.setRole(role);
-        }
         userAccountMapper.updateEntity(user, userAccountRequest);
         return userAccountMapper.toUserAccountResponse(userAccountRepository.save(user));
     }
@@ -140,10 +149,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new ConflictException(appMessagesProperties.getFailedToUpdatePasswordUserInKeycloak());
         }
-        user.setCredentials(
-                Stream.of(credentialMapper.toCredential(credentialDto))
-                        .collect(Collectors.toList())
-        );
+        user.setPassword(credentialDto.getValue());
         return  userAccountMapper.toUserAccountResponse(userAccountRepository.save(user));
 
     }
@@ -164,7 +170,13 @@ public class UserAccountServiceImpl implements UserAccountService {
         userKeycloak.setLastName(userAccountRequest.getLastName());
         userKeycloak.setEmail(userAccountRequest.getEmail());
         userKeycloak.setEmailVerified(userAccountRequest.isEmailVerified());
-        userKeycloak.setCredentials(userAccountRequest.getCredentials());
+        CredentialDto credentialDto = new CredentialDto();
+        credentialDto.setTemporary(true);
+        credentialDto.setValue(userAccountRequest.getPassword());
+        credentialDto.setType("password");
+        List<CredentialDto>  credentialDtos = new ArrayList<>();
+        credentialDtos.add(credentialDto);
+        userKeycloak.setCredentials(credentialDtos);
         return userKeycloak;
     }
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service("roleAccessHandler")
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class RoleAccessHandlerImpl implements RoleAccessHandler {
         }
         List<String> roleList = Optional.ofNullable(SecurityContextHandler.getRoles()).orElse(Collections.emptyList());
         log.info("roleList :  {} " , roleList);
-        List<Role> roleModelList = Optional.ofNullable(this.roleService.findByIdIn(List.copyOf(roleList))).orElse(List.of());
+        List<Role> roleModelList = Optional.ofNullable(this.roleService.findByIdIn(Set.copyOf(roleList))).orElse(List.of());
         log.info("roleModelList : {} " , roleModelList);
         boolean hasAdminSuperAdminRole = roleModelList.stream()
                 .anyMatch(role -> Boolean.TRUE.equals(role.getIsAdmin()) || Boolean.TRUE.equals(role.getIsSuperAdmin()));
@@ -44,7 +45,7 @@ public class RoleAccessHandlerImpl implements RoleAccessHandler {
     @Override
     public Boolean hasRole(String role) {
         List<String> roleList = Optional.ofNullable(SecurityContextHandler.getRoles()).orElse(Collections.emptyList());
-        List<Role> roleModelList = Optional.ofNullable(this.roleService.findByIdIn(List.copyOf(roleList))).orElse(List.of());
+        List<Role> roleModelList = Optional.ofNullable(this.roleService.findByIdIn(Set.copyOf(roleList))).orElse(List.of());
         return roleModelList.stream()
                 .map(Role::getId)
                 .anyMatch(code -> code.equals(role));
